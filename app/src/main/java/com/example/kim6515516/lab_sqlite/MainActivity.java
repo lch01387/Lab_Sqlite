@@ -3,15 +3,14 @@ package com.example.kim6515516.lab_sqlite;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -26,8 +25,13 @@ public class MainActivity extends AppCompatActivity {
 
     // layout object
     EditText mEtName;
+    EditText mEtName2;
+    EditText mEtName3;
+    EditText mEtName4;
     Button mBtInsert;
     Button mBtRead;
+    Button mBtDelete;
+    Button mBtRevise;
 
 
     ListView mList;
@@ -45,9 +49,14 @@ public class MainActivity extends AppCompatActivity {
         createTable();
 
         mEtName = (EditText) findViewById(R.id.et_text);
+        mEtName2 = (EditText) findViewById(R.id.et_text2);
+        mEtName3 = (EditText) findViewById(R.id.et_text3);
+        mEtName4 = (EditText) findViewById(R.id.et_text4);
         mBtInsert = (Button) findViewById(R.id.bt_insert);
         mBtRead = (Button) findViewById(R.id.bt_read);
+        mBtRevise = (Button) findViewById(R.id.bt_revise);
         ListView mList = (ListView) findViewById(R.id.list_view);
+
 
         mBtInsert.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,6 +73,24 @@ public class MainActivity extends AppCompatActivity {
                 nameList.clear();
                 selectAll();
                 musicAdapter.notifyDataSetChanged();
+            }
+        });
+
+        mBtDelete = (Button) findViewById(R.id.bt_delete);
+        mBtDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int index = Integer.parseInt(mEtName2.getText().toString());
+                removeData(index);
+            }
+        });
+
+        mBtRevise.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                String text = mEtName3.getText().toString();
+                int index = Integer.parseInt(mEtName4.getText().toString());
+                updateData(index, text);
             }
         });
 
@@ -133,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
 
     // 모든 Data 읽기
     public void selectAll() {
-        String sql = "select * from " + tableName + ";";
+        String sql = "select * from " + tableName + " order by id desc;";
         Cursor results = db.rawQuery(sql, null);
 
         results.moveToFirst();
@@ -145,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
 //            Toast.makeText(this, "index= " + id + " name=" + name, Toast.LENGTH_LONG).show();
             Log.d("lab_sqlite", "index= " + id + " name=" + name);
 
-            nameList.add(name);
+            nameList.add(name + "(id : " + id + ")");
 
             results.moveToNext();
         }
